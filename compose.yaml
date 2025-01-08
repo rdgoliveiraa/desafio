@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    ports:
+      - 5432:5432
+    environment:
+      - 'POSTGRES_DB=desafio'
+      - 'POSTGRES_PASSWORD=user123'
+      - 'POSTGRES_USER=user'
+    restart: always
+    networks:
+      - desafio-network
+  
+  pgadmin:
+    image: dpage/pgadmin4:8.11.0
+    ports:
+      - 5050:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@user.com
+      - PGADMIN_DEFAULT_PASSWORD=secret
+    depends_on:
+      - postgres
+    networks:
+      - desafio-network
+  
+  desafio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /desafio
+    environment:
+      - SPRING.DATASOURCE.URL=jdbc:postgresql://db:5432/desafio
+      - SPRING.DATASOURCE.USERNAME=user
+      - SPRING.DATASOURCE.PASSWORD=user123
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
+    command:
+      - mvn spring-boot:run
+    depends_on:
+      - postgres
+    networks:
+      - desafio-network
+
+networks:
+  desafio-network:
+    driver: bridge

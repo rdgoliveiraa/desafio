@@ -1,0 +1,10 @@
+spring:
+    application:
+        name: desafio
+    datasource:
+        username: user
+        password: user123
+        url: jdbc:postgresql://localhost:5432/desafio
+jwt:
+  token:
+    key: 53cr37
